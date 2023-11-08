@@ -81,6 +81,6 @@ func menuDisplay() string {
 	
 					3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
 	
-					4.  EXIT                       Exit from netspionage to your terminal
+					4.  EXIT                       Exit from cyber-guard to your terminal
 						  `
 }
