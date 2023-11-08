@@ -61,26 +61,26 @@ func printDetails() string {
 	//green := "\033[32m"
 	blue := "\033[34m"
 
-	return (blue + `
-                Created by Jihed Ben Zarb and Mohamed Attia  V.0.0.1
-
-                https://github.com/Jihed-Sh/cyberguard
-                ----------------------------------------------------------------------------
-                      `)
+	return blue + `
+					Created by Jihed Ben Zarb and Mohamed Attia  V.0.0.1
+	
+					https://github.com/Jihed-Sh/cyberguard
+					----------------------------------------------------------------------------
+						  `
 }
 
 func menuDisplay() string {
 	resetColor := "\033[0m"
 
-	return (resetColor + `
-                ENTER 1 - 4 TO SELECT OPTIONS
-
-                1.  SCANNING                   Scan for IPs, nearby APs, ports, hosts, and more
-
-                2.  RECONNAISSANCE             Gather  information  about nearby MAC addresses
-
-                3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
-
-                4.  EXIT                       Exit from netspionage to your terminal
-                      `)
+	return resetColor + `
+					ENTER 1 - 4 TO SELECT OPTIONS
+	
+					1.  SCANNING                   Scan for IPs, nearby APs, ports, hosts, and more
+	
+					2.  RECONNAISSANCE             Gather  information  about nearby MAC addresses
+	
+					3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
+	
+					4.  EXIT                       Exit from netspionage to your terminal
+						  `
 }
