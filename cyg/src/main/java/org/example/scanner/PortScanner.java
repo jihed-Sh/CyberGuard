@@ -1,4 +1,4 @@
-package org.example;
+package org.example.scanner;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;

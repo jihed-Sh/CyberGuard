@@ -13,14 +13,15 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-<!--    <dependencies>-->
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/jpcap/jpcap-macosx-native-deps -->
 <!--        <dependency>-->
-<!--            <groupId>org.intracode</groupId>-->
-<!--            <artifactId>wt4java</artifactId>-->
-<!--            <version>1.9</version> &lt;!&ndash; Replace with the latest version &ndash;&gt;-->
+<!--            <groupId>jpcap</groupId>-->
+<!--            <artifactId>jpcap-macosx-native-deps</artifactId>-->
+<!--            <version>0.1.18-002</version>-->
 <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/jnetpcap/jnetpcap -->
 
-
-<!--    </dependencies>-->
+    </dependencies>
 
 </project>

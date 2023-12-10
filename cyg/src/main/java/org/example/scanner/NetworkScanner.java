@@ -1,4 +1,4 @@
-package org.example;
+package org.example.scanner;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -42,6 +42,7 @@ public class NetworkScanner {
         ConcurrentSkipListSet networkIps = IpScanner.scan("192.168.1.0", 254);
         System.out.println("Devices connected to the network:");
         networkIps.forEach(System.out::println);
+
     }
 
     private String getMyIpAddress() {

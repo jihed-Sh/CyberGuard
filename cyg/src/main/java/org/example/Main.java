@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.scanner.NetworkScanner;
+
 import java.util.Scanner;
 
 import static org.example.utils.ConsolColors.*;
@@ -9,26 +11,30 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-
         if(args.length==2){
             if(args[0].equals("scan")){
                 String option=args[1];
                 switch (option){
                     case "--network":
                         scannerChoice('1',"");
+                        break;
                     case "--wifi":
                         scannerChoice('2',"");
+                        break;
                     case "--port":
                         String target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
                         scannerChoice('3',target);
+                        break;
                 }
             }
-        }else if(args.length==1) {
+        }
+        else if(args.length==1) {
             if(args[0].equals("scan")){
                 handleScanning();
             }
 
-        }else{
+        }
+        else{
             printDisplay();
             while (true) {
                 String userInput = printInput("\n CYG >> ");
@@ -51,7 +57,7 @@ public class Main {
                             printDisplay();
                             break;
                         case 2:
-//                        handleReconnaissance();
+                        handleReconnaissance();
                             System.out.println("reconnaissance is here");
                             break;
                         case 3:
@@ -147,6 +153,7 @@ public class Main {
     }
 
     private static void reconChoice(String resp, String target, String manualInput) {
+
         // Implement the logic for reconChoice
         // You may need to create a separate method or class for this logic
     }
