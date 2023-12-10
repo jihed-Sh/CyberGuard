@@ -1,0 +1,61 @@
+#!/bin/bash
+
+
+
+
+#
+#
+#
+#
+#this is for local machine , using linux , will make it better later
+#
+#
+#
+# chmod +x start_cyberguard.sh
+# sudo mv start_cyberguard.sh /usr/local/bin/
+# sudo ln -s /usr/local/bin/start_cyberguard.sh /usr/local/bin/cyg
+# Set the classpath to the current directory
+#
+#
+#
+#
+#
+#
+#
+#
+CLASSPATH=/home/jihed/projects/CyberGuard/cyg/target/classes
+
+# Specify the main class of your Java application
+MAIN_CLASS=org.example.Main
+
+# # Run the Java application with the provided arguments
+# java -cp "$CLASSPATH" "$MAIN_CLASS" "$@"
+
+
+# Function to start the Java application
+start_cyberguard() {
+    java -cp "$CLASSPATH" "$MAIN_CLASS" "$@"
+}
+
+# Function to display help
+show_help() {
+#     \033[0;35m \033[0m purple
+#     \033[0;34m \033[0m blue
+    echo -e "\033[0;34mAvailable commands:\033[0m"
+    echo -e "  \033[0;35mcyg start\033[0m   \033[0;34m - Start the Cyberguard application\033[0m "
+    echo -e "  \033[0;35mcyg help\033[0m    \033[0;34m - Show this help message\033[0m "
+}
+
+# Check the command and execute accordingly
+case "$1" in
+    "start")
+        shift
+        start_cyberguard "$@"
+        ;;
+    "help")
+        show_help
+        ;;
+    *)
+        echo "Invalid command. Use 'cyg help' to see available commands."
+        ;;
+esac

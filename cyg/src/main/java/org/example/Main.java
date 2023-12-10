@@ -48,7 +48,7 @@ public class Main {
                         System.out.println("detection is here");
                         break;
                     case 4:
-//                        exit("\n Till next time!");
+                        exit("\n Till next time!");
                         break;
                     default:
                         break;
