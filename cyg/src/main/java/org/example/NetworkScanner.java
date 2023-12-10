@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import static org.example.Main.exit;
+
 public class NetworkScanner {
     private static final Scanner scanner = new Scanner(System.in);
     private static final int wifiScanTimeout = 10;
@@ -20,15 +22,16 @@ public class NetworkScanner {
     public void scanner_choice(char choice, String target) {
         if (choice == '1') {
             network_scanner(target);
-            return;
         } else if (choice == '2') {
-//            wifi_scanner();
-            return;
+            wifi_scanner();
         } else if (choice == '3') {
-//            port_scanner(target);
-            return;
+            if(target.isEmpty()){
+                System.out.println("Needs an IP address");
+            }else{
+                port_scanner(target);
+            }
         } else {
-//            exit()
+            exit("Invalid option");
         }
 
     }
@@ -67,14 +70,14 @@ public class NetworkScanner {
 
 
 ///TODO: test with wifi adapter
-//    public void  wifi_scanner(){
+    public void  wifi_scanner(){
 //        initiate_wifi_scan();
-//    }
-//
-//
-//    public void  port_scanner(target){
-//        scan_ports(target);
-//    }
+    }
+
+
+    public void  port_scanner(String target){
+        PortScanner.scanPorts(target);
+    }
 
 
 }

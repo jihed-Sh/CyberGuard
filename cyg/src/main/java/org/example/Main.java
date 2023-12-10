@@ -2,60 +2,73 @@ package org.example;
 
 import java.util.Scanner;
 
-public class Main {
-    public static final String RESET = "\033[0m";  // Text Reset
+import static org.example.utils.ConsolColors.*;
 
-    // Regular Colors
-    public static final String BLACK = "\033[0;30m";   // BLACK
-    public static final String RED = "\033[0;31m";     // RED
-    public static final String GREEN = "\033[0;32m";   // GREEN
-    public static final String YELLOW = "\033[0;33m";  // YELLOW
-    public static final String BLUE = "\033[0;34m";    // BLUE
-    public static final String PURPLE = "\033[0;35m";  // PURPLE
-    public static final String CYAN = "\033[0;36m";    // CYAN
-    public static final String WHITE = "\033[0;37m";   // WHITE
+public class Main {
+
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        printDisplay();
 
-        while (true) {
-            String userInput = printInput("\n CYG >> ");
-
-            if (userInput.isEmpty()) {
-                printOutput("\n");
-                continue;
-            }
-
-            if (userInput.equals("help") || userInput.equals("options") || userInput.equals("commands")) {
-                printOutput(menuDisplay());
-                continue;
-            }
-
-            try {
-                int choice = Integer.parseInt(userInput);
-                switch (choice) {
-                    case 1:
-                        handleScanning();
-                        printDisplay();
-                        break;
-                    case 2:
-//                        handleReconnaissance();
-                        System.out.println("reconnaissance is here");
-                        break;
-                    case 3:
-//                        handleDetection();
-                        System.out.println("detection is here");
-                        break;
-                    case 4:
-                        exit("\n Till next time!");
-                        break;
-                    default:
-                        break;
+        if(args.length==2){
+            if(args[0].equals("scan")){
+                String option=args[1];
+                switch (option){
+                    case "--network":
+                        scannerChoice('1',"");
+                    case "--wifi":
+                        scannerChoice('2',"");
+                    case "--port":
+                        String target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
+                        scannerChoice('3',target);
                 }
-            } catch (NumberFormatException e) {
-                printOutput("\n Invalid Command! Type `help` to see all options");
             }
+        }else if(args.length==1) {
+            if(args[0].equals("scan")){
+                handleScanning();
+            }
+
+        }else{
+            printDisplay();
+            while (true) {
+                String userInput = printInput("\n CYG >> ");
+
+                if (userInput.isEmpty()) {
+                    printOutput("\n");
+                    continue;
+                }
+
+                if (userInput.equals("help") || userInput.equals("options") || userInput.equals("commands")) {
+                    printOutput(menuDisplay());
+                    continue;
+                }
+
+                try {
+                    int choice = Integer.parseInt(userInput);
+                    switch (choice) {
+                        case 1:
+                            handleScanning();
+                            printDisplay();
+                            break;
+                        case 2:
+//                        handleReconnaissance();
+                            System.out.println("reconnaissance is here");
+                            break;
+                        case 3:
+//                        handleDetection();
+                            System.out.println("detection is here");
+                            break;
+                        case 4:
+                            exit("\n Till next time!");
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    printOutput("\n Invalid Command! Type `help` to see all options");
+                }
+        }
+
         }
     }
 
@@ -70,12 +83,10 @@ public class Main {
             printOutput("\n 1. Network Scanner \n\n 2. WiFi Scanner \n\n 3. Port Scanner \n");
             String resp = printInput(" SCAN INPUT >> ");
             String target = "";
-
-//            if (resp.equals("1") || resp.equals("3")) {
-//                target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
-//            }
-
-            scannerChoice(target);
+            if (resp.equals("3")) {
+                target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
+            }
+            scannerChoice(resp.charAt(0), target);
             break;
         }
     }
@@ -125,14 +136,14 @@ public class Main {
         return scanner.nextLine().trim();
     }
 
-    private static void exit(String message) {
+    public static void exit(String message) {
         System.out.println(message);
         System.exit(0);
     }
 
-    private static void scannerChoice(String target) {
-        NetworkScanner networkScanner=new NetworkScanner();
-        networkScanner.scanner_choice('1',target);
+    private static void scannerChoice(char resp, String target) {
+        NetworkScanner networkScanner = new NetworkScanner();
+        networkScanner.scanner_choice(resp, target);
     }
 
     private static void reconChoice(String resp, String target, String manualInput) {
@@ -151,17 +162,17 @@ public class Main {
 
     private static String printDetails() {
         return
-                PURPLE+
-                """
-                Created by Jihed Ben Zarb & Mohamed Attia V.0.0.1
+                PURPLE +
+                        """
+                                Created by Jihed Ben Zarb & Mohamed Attia V.0.0.1
 
-                https://github.com/Jihed-sh/cyberguard
-                ----------------------------------------------------------------------------
-                      """;
+                                https://github.com/Jihed-sh/cyberguard
+                                ----------------------------------------------------------------------------
+                                      """;
     }
 
     private static String menuDisplay() {
-        return RESET+"""
+        return RESET + """
                 ENTER 1 - 4 TO SELECT OPTIONS
 
                 1.  SCANNING                   Scan for IPs, nearby APs, ports, hosts, and more

@@ -13,5 +13,14 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.intracode</groupId>-->
+<!--            <artifactId>wt4java</artifactId>-->
+<!--            <version>1.9</version> &lt;!&ndash; Replace with the latest version &ndash;&gt;-->
+<!--        </dependency>-->
+
+
+<!--    </dependencies>-->
 
 </project>
