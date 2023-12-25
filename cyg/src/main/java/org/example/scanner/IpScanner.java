@@ -20,14 +20,13 @@ public class IpScanner {
         ExecutorService executorService = Executors.newFixedThreadPool(20);
         final String networkId = firstIpInTheNetwork.substring(0, firstIpInTheNetwork.length() - 1);
         ConcurrentSkipListSet ipsSet = new ConcurrentSkipListSet();
-
         AtomicInteger ips = new AtomicInteger(0);
         while (ips.get() <= numOfIps) {
             String ip = networkId + ips.getAndIncrement();
             executorService.submit(() -> {
                 try {
                     InetAddress inAddress = InetAddress.getByName(ip);
-                    if (inAddress.isReachable(500)) {
+                    if (inAddress.isReachable(1000)) {
                         ipsSet.add(ip);
                     }
                 } catch (IOException e) {

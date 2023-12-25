@@ -65,6 +65,9 @@ public class Main {
                             System.out.println("detection is here");
                             break;
                         case 4:
+                            System.out.println("Vulnerability Scanning");
+                            break;
+                        case 5:
                             exit("\n Till next time!");
                             break;
                         default:
@@ -187,8 +190,10 @@ public class Main {
                 2.  RECONNAISSANCE             Gather information about nearby MAC addresses
 
                 3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
+                
+                4.  VULNERABILITY SCANNING     Automatically scan code for security vulnerabilities
 
-                4.  EXIT                       Exit from Cyberguard to your terminal
+                5.  EXIT                       Exit from Cyberguard to your terminal
                       """;
     }
 }

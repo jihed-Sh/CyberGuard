@@ -1,9 +1,6 @@
 package org.example.scanner;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -39,33 +36,26 @@ public class NetworkScanner {
 
     public void network_scanner(String target) {
         IpScanner ipScanner = new IpScanner();
-        ConcurrentSkipListSet networkIps = IpScanner.scan("192.168.1.0", 254);
+        String myIpAddress=getMyIpAddress();
+        ConcurrentSkipListSet networkIps = IpScanner.scan(myIpAddress, 254);
         System.out.println("Devices connected to the network:");
         networkIps.forEach(System.out::println);
+
 
     }
 
     private String getMyIpAddress() {
-        String ip;
         try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                // filters out 127.0.0.1 and inactive interfaces
-                if (iface.isLoopback() || !iface.isUp())
-                    continue;
-
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    ip = addr.getHostAddress();
-//                    System.out.println(iface.getDisplayName() + " " + ip);
-                    return ip;
-                }
+            Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            while( networkInterfaceEnumeration.hasMoreElements()){
+                for ( InterfaceAddress interfaceAddress : networkInterfaceEnumeration.nextElement().getInterfaceAddresses())
+                    if ( interfaceAddress.getAddress().isSiteLocalAddress())
+                        return interfaceAddress.getAddress().getHostAddress();
             }
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
         return "";
     }
 
