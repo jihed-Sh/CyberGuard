@@ -14,6 +14,25 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.32</version> <!-- Use the latest version available -->
+        </dependency>
+
+        <!-- SLF4J Logback Binding -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.6</version> <!-- Use the latest version available -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-core</artifactId>
+            <version>6.3.1</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/jpcap/jpcap-macosx-native-deps -->
 <!--        <dependency>-->
 <!--            <groupId>jpcap</groupId>-->

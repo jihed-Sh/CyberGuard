@@ -11,30 +11,28 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        if(args.length==2){
-            if(args[0].equals("scan")){
-                String option=args[1];
-                switch (option){
+        if (args.length == 2) {
+            if (args[0].equals("scan")) {
+                String option = args[1];
+                switch (option) {
                     case "--network":
-                        scannerChoice('1',"");
+                        scannerChoice('1', "");
                         break;
                     case "--wifi":
-                        scannerChoice('2',"");
+                        scannerChoice('2', "");
                         break;
                     case "--port":
                         String target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
-                        scannerChoice('3',target);
+                        scannerChoice('3', target);
                         break;
                 }
             }
-        }
-        else if(args.length==1) {
-            if(args[0].equals("scan")){
+        } else if (args.length == 1) {
+            if (args[0].equals("scan")) {
                 handleScanning();
             }
 
-        }
-        else{
+        } else {
             printDisplay();
             while (true) {
                 String userInput = printInput("\n CYG >> ");
@@ -57,7 +55,7 @@ public class Main {
                             printDisplay();
                             break;
                         case 2:
-                        handleReconnaissance();
+                            handleReconnaissance();
                             System.out.println("reconnaissance is here");
                             break;
                         case 3:
@@ -65,6 +63,7 @@ public class Main {
                             System.out.println("detection is here");
                             break;
                         case 4:
+//                            handleVulnerabilityScanning();
                             System.out.println("Vulnerability Scanning");
                             break;
                         case 5:
@@ -76,7 +75,7 @@ public class Main {
                 } catch (NumberFormatException e) {
                     printOutput("\n Invalid Command! Type `help` to see all options");
                 }
-        }
+            }
 
         }
     }
@@ -89,16 +88,28 @@ public class Main {
 
     private static void handleScanning() {
         while (true) {
-            printOutput("\n 1. Network Scanner \n\n 2. WiFi Scanner \n\n 3. Port Scanner \n");
+            ///TODO Wifi Scanner
+//            printOutput("\n 1. Network Scanner \n\n 2. WiFi Scanner \n\n 3. Port Scanner \n");
+            printOutput("\n 1. Network Scanner \n\n 2. Port Scanner \n\n");
             String resp = printInput(" SCAN INPUT >> ");
             String target = "";
-            if (resp.equals("3")) {
+            if (resp.equals("2")) {
                 target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
             }
             scannerChoice(resp.charAt(0), target);
             break;
         }
     }
+
+//    private static void handleVulnerabilityScanning() {
+//        while (true) {
+//            printOutput("\n 1. Code Analysis \n\n 2. Security Analysis  \n\n");
+//            String choice = printInput(" SCAN INPUT >> ");
+//            String path = printInput(" Path to project (Eg:path/to/project) >> ");
+//            vulnerabilityScanningChoice(choice,path);
+//            break;
+//        }
+//    }
 
     private static void handleReconnaissance() {
         while (true) {
@@ -155,8 +166,12 @@ public class Main {
         networkScanner.scanner_choice(resp, target);
     }
 
-    private static void reconChoice(String resp, String target, String manualInput) {
+//    private static void vulnerabilityScanningChoice(String choice,String path  ) {
+//        VulnerabilityScanner vulnerabilityScanner = new VulnerabilityScanner();
+//        vulnerabilityScanner.scanner(choice,path);
+//    }
 
+    private static void reconChoice(String resp, String target, String manualInput) {
         // Implement the logic for reconChoice
         // You may need to create a separate method or class for this logic
     }
@@ -183,14 +198,14 @@ public class Main {
 
     private static String menuDisplay() {
         return RESET + """
-                ENTER 1 - 4 TO SELECT OPTIONS
+                ENTER 1 - 5 TO SELECT OPTIONS
 
                 1.  SCANNING                   Scan for IPs, nearby APs, ports, hosts, and more
-
+                                
                 2.  RECONNAISSANCE             Gather information about nearby MAC addresses
 
                 3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
-                
+                                
                 4.  VULNERABILITY SCANNING     Automatically scan code for security vulnerabilities
 
                 5.  EXIT                       Exit from Cyberguard to your terminal

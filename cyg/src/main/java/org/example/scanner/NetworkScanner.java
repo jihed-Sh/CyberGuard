@@ -19,9 +19,11 @@ public class NetworkScanner {
     public void scanner_choice(char choice, String target) {
         if (choice == '1') {
             network_scanner(target);
-        } else if (choice == '2') {
-            wifi_scanner();
-        } else if (choice == '3') {
+        }
+//        else if (choice == '2') {
+//            wifi_scanner();
+//        }
+        else if (choice == '2') {
             if(target.isEmpty()){
                 System.out.println("Needs an IP address");
             }else{
