@@ -69,6 +69,7 @@ public class NetworkScanner {
 
 
     public void  port_scanner(String target){
+//        PortScanner.scanPorts(getMyIpAddress());
         PortScanner.scanPorts(target);
     }
 
