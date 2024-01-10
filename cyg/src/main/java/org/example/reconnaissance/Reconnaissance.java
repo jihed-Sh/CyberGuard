@@ -1,16 +1,18 @@
 //package org.example.reconnaissance;
 //
 //
+//import com.google.gson.Gson;
 //
 //import java.io.BufferedReader;
 //import java.io.IOException;
 //import java.io.InputStreamReader;
 //import java.net.*;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Collectors;
+//import java.util.*;
 //
 //public class Reconnaissance {
+//    private static final int ARP_PACKET_SIZE = 34;  // ARP packet size in bytes
+//    private static final int TIMEOUT = 1000;  // Timeout in milliseconds
+//
 //    public static void reconChoice(String choice, String target, String manualInput) {
 //        if ("1".equals(choice)) {
 //            chooseMacAddress(target);
@@ -21,168 +23,218 @@
 //        }
 //    }
 //
+//
+//    public static void main(String[] args) {
+//        String addressIp="192.168.40.82";
+//        scanAddresses(addressIp);
+//    }
 //    public static void chooseMacAddress(String target) {
 //        scanAddresses(target);
 //    }
 //
-//    public static void inputMacAddress(String manualInput) {
-//        addressApiCall(manualInput, "");
+//    public static void inputMacAddress(String manual_input) {
+//        addressApiCall(manual_input, "");
 //    }
 //
-//    // Helper Functions
+//    private static void scanAddresses(String target) {
+//        byte[] broadcastPacket = createPacket(target);
+//        List<String> successPackets = transmitPacket(broadcastPacket);
+//        List<Entry> entries = parseResponse(successPackets);
+//        displayPicker(entries);
+//    }
 //
-//    public static void addressApiCall(String address, String ipAddress) {
-//        System.out.println("\nSCANNING MAC ADDRESS...");
-//        String apiUrl = "https://macvendors.co/api/" + address;
+//    private static byte[] createPacket(String targetIp) {
+//        try {
+//
+//            InetAddress myInetAddress = InetAddress.getByName(targetIp);
+//            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(myInetAddress);
+//            byte[] localMac = networkInterface.getHardwareAddress();
+//
+//            byte[] broadcast = new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255};
+//            byte[] header = new byte[]{0, 1, 8, 6, 0, 1, 8, 0, 6, 4, 0, 1};
+//
+//            byte[] arpRequest = new byte[ARP_PACKET_SIZE];
+//            System.arraycopy(header, 0, arpRequest, 0, header.length);
+//            System.arraycopy(localMac, 0, arpRequest, header.length, localMac.length);
+//            Arrays.fill(arpRequest, header.length + localMac.length, header.length + 2 * localMac.length, (byte) 0);
+//            System.arraycopy(myInetAddress.getAddress(), 0, arpRequest, header.length + 2 * localMac.length, 4);
+//            System.arraycopy(localMac, 0, arpRequest, header.length + 2 * localMac.length + 4, localMac.length);
+//            Arrays.fill(arpRequest, header.length + 2 * localMac.length + 4 + localMac.length, arpRequest.length, (byte) 0);
+//
+//            return arpRequest;
+//        } catch (UnknownHostException | SocketException e) {
+//            e.printStackTrace();
+//            return new byte[0];
+//        }
+//    }
+//
+//    private static List<String> transmitPacket(byte[] packet) {
+//        List<String> successList = new ArrayList<>();
 //
 //        try {
-//            URL url = new URL(apiUrl);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            DatagramSocket socket = new DatagramSocket();
+//            socket.setSoTimeout(TIMEOUT);
 //
-//            // Set the request method
+//            // Broadcast the ARP request packet
+//            InetAddress broadcastAddress = InetAddress.getByAddress(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255});
+//            DatagramPacket sendPacket = new DatagramPacket(packet, packet.length, broadcastAddress, 7);
+//            socket.send(sendPacket);
+//
+//            // Receive ARP responses
+//            while (true) {
+//                byte[] receiveBuffer = new byte[ARP_PACKET_SIZE];
+//                DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+//
+//                try {
+//                    socket.receive(receivePacket);
+//
+//                    // Process the received ARP response packet
+//                    String macAddress = parseMacAddress(receiveBuffer);
+//                    successList.add(macAddress);
+//                } catch (java.net.SocketTimeoutException timeoutException) {
+//                    // Timeout reached, stop receiving responses
+//                    break;
+//                }
+//            }
+//
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return successList;
+//    }
+//
+//    private static String parseMacAddress(byte[] packet) {
+//        // Assuming a common structure of an ARP response packet
+//        // You may need to adjust this based on the actual format of your ARP response
+//        StringBuilder macAddress = new StringBuilder();
+//
+//        // Extract the MAC address from the ARP response packet
+//        for (int i = 6; i < 12; i++) {
+//            macAddress.append(String.format("%02X", packet[i]));
+//            if (i < 11) {
+//                macAddress.append(":");
+//            }
+//        }
+//
+//        return macAddress.toString();
+//    }
+//
+//    private static List<Entry> parseResponse(List<String> successList) {
+//        List<Entry> entries = new ArrayList<>();
+//
+//        for (String macAddress : successList) {
+//            // Assuming the MAC address is a string in the successList
+//            // You might need to adjust this logic based on the actual format of the ARP response
+//            entries.add(new Entry("", macAddress));
+//        }
+//
+//        return entries;
+//    }
+//
+//    private static void displayPicker(List<Entry> elementEntries) {
+//        System.out.println("SELECT MAC Address:");
+//
+//        for (int i = 0; i < elementEntries.size(); i++) {
+//            System.out.println((i + 1) + ". " + elementEntries.get(i).getMac());
+//        }
+//
+//        Scanner scanner = new Scanner(System.in);
+//
+//        // Get user input
+//        System.out.print("Enter the number corresponding to the selected MAC Address: ");
+//        int selectedIndex = scanner.nextInt();
+//
+//        // Validate the selected index
+//        if (selectedIndex >= 1 && selectedIndex <= elementEntries.size()) {
+//            Entry selectedEntry = elementEntries.get(selectedIndex - 1);
+//            addressApiCall(selectedEntry.getMac(), selectedEntry.getIp());
+//        } else {
+//            System.out.println("Invalid selection. Please enter a valid number.");
+//        }
+//    }
+//
+//    private static void addressApiCall(String address, String ipAddress) {
+//        System.out.println("\n SCANNING MAC ADDRESS...");
+//
+//        try {
+//            URL url = new URL("https://macvendors.co/api/" + address);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 //            connection.setRequestMethod("GET");
 //
-//            // Get the response
 //            int responseCode = connection.getResponseCode();
 //
 //            if (responseCode == HttpURLConnection.HTTP_OK) {
 //                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 //                String inputLine;
-//                StringBuilder content = new StringBuilder();
+//                StringBuilder response = new StringBuilder();
 //
 //                while ((inputLine = in.readLine()) != null) {
-//                    content.append(inputLine);
+//                    response.append(inputLine);
 //                }
 //                in.close();
 //
-//                // Parse JSON response
-//                String jsonResponse = content.toString();
-//                parseApiResults(jsonResponse, ipAddress);
+//                // Process API response
+//                transcribeApiResults(response.toString(), ipAddress);
 //            } else {
-//                System.out.println("\nNo MAC Address Found!");
+//                System.out.println("\n No MAC Address Found!");
 //            }
-//
-//            connection.disconnect();
-//        } catch (IOException e) {
+//        } catch (Exception e) {
 //            e.printStackTrace();
-//            System.out.println("\nERROR: Something Went Wrong");
 //        }
 //    }
 //
-//    public static void parseApiResults(String jsonResponse, String ipAddress) {
-//        // Parse the JSON response here and print the results
-//        // You might want to use a JSON parsing library like Gson for more complex JSON parsing
+//    private static void transcribeApiResults(String jsonResponse, String ipAddress) {
+//        // Assuming jsonResponse is a JSON string
+//        // You may need to adjust this based on the actual API response format
+//        // You can use a JSON parsing library like Jackson or Gson for more complex responses
+//        Map<String, Object> jsonMap = parseJson(jsonResponse);
 //
-//        System.out.println("\nResults from API:");
-//        System.out.println(jsonResponse);
-//
-//        if (ipAddress != null && !ipAddress.isEmpty()) {
-//            System.out.println("\nIP ADDRESS: " + ipAddress);
-//        }
-//    }
-//    public static void scanAddresses(String target) {
-//        List<Map<String, String>> entries = createPacketAndTransmit(target);
-//        displayPicker(entries);
-//    }
-//
-//    public static List<Map<String, String>> createPacketAndTransmit(String ip) {
-//        List<Map<String, String>> successList = transmitPacket(createPacket(ip));
-//        return successList;
-//    }
-//
-//    public static byte[] createPacket(String ip) {
-//        NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-//
-//        if (devices.length == 0) {
-//            System.out.println("No network interface found");
-//            return null;
+//        for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+//            String key = entry.getKey();
+//            Object value = entry.getValue();
+//            System.out.println("\n " + snakeCaseToNormal(key) + ": " + value);
 //        }
 //
-//        NetworkInterface device = devices[0]; // Choose a network interface, you may need to select the appropriate one
-//
-//        // Create an ARP request packet
-//        ARPPacket arpRequest = new ARPPacket();
-//        arpRequest.hardtype = ARPPacket.HARDTYPE_ETHER;
-//        arpRequest.prototype = ARPPacket.PROTOTYPE_IP;
-//        arpRequest.operation = ARPPacket.ARP_REQUEST;
-//
-//        // Set the sender's MAC and IP address
-//        arpRequest.sender_hardaddr = device.mac_address;
-//        arpRequest.sender_protoaddr = device.addresses[0].address;
-//
-//        // Set the target's MAC and IP address
-//        arpRequest.target_hardaddr = new byte[]{0, 0, 0, 0, 0, 0}; // Placeholder, set the appropriate MAC
-//        arpRequest.target_protoaddr = IPAddress.valueOf(ip).getAddress();
-//
-//        // Create an Ethernet frame
-//        EthernetPacket ether = new EthernetPacket();
-//        ether.frametype = EthernetPacket.ETHERTYPE_ARP;
-//        ether.src_mac = device.mac_address;
-//        ether.dst_mac = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-//
-//        // Combine ARP request with Ethernet frame
-//        ether.datalink = arpRequest;
-//
-//        return ether.getPacketData();
-//        // Create an ARP request packet
-//        // This might require additional dependencies or custom classes for packet creation
-//        // Adjust this part based on the library or method you choose for creating packets
-//        byte[] arpRequestPacket = createArpRequestPacket(ip);
-//        return arpRequestPacket;
+//        if (ipAddress != null && ipAddress.length() > 0) {
+//            System.out.println("\n IP ADDRESS: " + ipAddress);
+//        }
 //    }
 //
-//    // This method needs to be implemented based on your choice of packet creation library or method
-//    // You may use a dedicated library for creating ARP packets in Java
-//    private static byte[] createArpRequestPacket(String ip) {
-//        // Implement ARP request packet creation here
-//        // Return the byte representation of the packet
-//        // You may use a library or construct the packet manually
-//        return new byte[0];
+//    private static Map parseJson(String jsonString) {
+//        Gson gson = new Gson();
+//        return gson.fromJson(jsonString, Map.class);
+//
 //    }
 //
-//    public static List<Map<String, String>> transmitPacket(byte[] packet) {
-//        // Implement packet transmission logic here
-//        // Adjust this part based on the library or method you choose for packet transmission
-//        List<Map<String, String>> successList = sendPacketAndGetResponse(packet);
-//        return successList;
+//    private static String snakeCaseToNormal(String snakeText) {
+//        String[] temp = snakeText.split("_");
+//        StringBuilder res = new StringBuilder(temp[0].toUpperCase());
+//        for (int i = 1; i < temp.length; i++) {
+//            res.append(" ").append(temp[i].substring(0, 1).toUpperCase()).append(temp[i].substring(1));
+//        }
+//        return res.toString();
 //    }
 //
-//    // This method needs to be implemented based on your choice of packet transmission library or method
-//    private static List<Map<String, String>> sendPacketAndGetResponse(byte[] packet) {
-//        // Implement packet transmission and reception logic here
-//        // Return a list of successful responses
-//        return List.of();  // Placeholder, replace with actual logic
+//
+//    private static class Entry {
+//        private String ip;
+//        private String mac;
+//
+//        public Entry(String ip, String mac) {
+//            this.ip = ip;
+//            this.mac = mac;
+//        }
+//
+//        public String getIp() {
+//            return ip;
+//        }
+//
+//        public String getMac() {
+//            return mac;
+//        }
 //    }
 //
-//    public static void displayPicker(List<Map<String, String>> elementEntries) {
-//        List<String> macList = extractMacAddresses(elementEntries);
-//        String selectedMac = displayPickerAndGetSelection(macList);
-//        addressApiCall(selectedMac, elementEntries);
-//    }
 //
-//    private static List<String> extractMacAddresses(List<Map<String, String>> elementEntries) {
-//        // Extract MAC addresses from the entries
-//        // Adjust this part based on the structure of your entries
-//        return elementEntries.stream()
-//                .map(entry -> entry.get("mac"))
-//                .collect(Collectors.toList());
-//    }
-//
-//    private static String displayPickerAndGetSelection(List<String> macList) {
-//        // Implement the picker display logic here
-//        // Return the selected MAC address
-//        // You may use a GUI library or console-based input
-//        // This part depends on your specific requirements and the available libraries
-//        // Replace this with the actual logic
-//        return macList.get(0);
-//    }
-//
-//    private static void addressApiCall(String selectedMac, List<Map<String, String>> elementEntries) {
-//        // Implement the API call using the selected MAC address
-//        // You can use the selected MAC address to fetch additional information
-//        // Make an HTTP request or use any appropriate method
-//        // Adjust this part based on your requirements and available libraries
-//        System.out.println("Selected MAC Address: " + selectedMac);
-//        // Replace this with the actual API call logic
-//    }
 //}

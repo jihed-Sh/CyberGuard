@@ -37,13 +37,10 @@ public class NetworkScanner {
 
 
     public void network_scanner(String target) {
-        IpScanner ipScanner = new IpScanner();
         String myIpAddress=getMyIpAddress();
         ConcurrentSkipListSet networkIps = IpScanner.scan(myIpAddress, 254);
         System.out.println("Devices connected to the network:");
         networkIps.forEach(System.out::println);
-
-
     }
 
     private String getMyIpAddress() {

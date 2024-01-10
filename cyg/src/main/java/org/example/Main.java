@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.asking.GptAsking;
+import org.example.dependency_check.RunDependencyCheck;
 import org.example.scanner.NetworkScanner;
 
 import java.util.Scanner;
@@ -55,7 +57,7 @@ public class Main {
                             printDisplay();
                             break;
                         case 2:
-                            handleReconnaissance();
+//                            handleReconnaissance();
                             System.out.println("reconnaissance is here");
                             break;
                         case 3:
@@ -63,10 +65,14 @@ public class Main {
                             System.out.println("detection is here");
                             break;
                         case 4:
-//                            handleVulnerabilityScanning();
-                            System.out.println("Vulnerability Scanning");
+                            handleVulnerabilityScanning();
+                            printDisplay();
                             break;
                         case 5:
+                            handleAsking();
+                            printDisplay();
+                            break;
+                        case 6:
                             exit("\n Till next time!");
                             break;
                         default:
@@ -78,6 +84,18 @@ public class Main {
             }
 
         }
+    }
+
+    private static void handleAsking() {
+        while (true) {
+            String resp = printInput(" What is your question for today >> ");
+            questionChoice(resp);
+            break;
+        }
+    }
+
+    private static void questionChoice(String resp) {
+        System.out.println(GptAsking.chatGPT(resp));
     }
 
     private static void printDisplay() {
@@ -101,15 +119,13 @@ public class Main {
         }
     }
 
-//    private static void handleVulnerabilityScanning() {
-//        while (true) {
-//            printOutput("\n 1. Code Analysis \n\n 2. Security Analysis  \n\n");
-//            String choice = printInput(" SCAN INPUT >> ");
-//            String path = printInput(" Path to project (Eg:path/to/project) >> ");
-//            vulnerabilityScanningChoice(choice,path);
-//            break;
-//        }
-//    }
+    private static void handleVulnerabilityScanning() {
+        while (true) {
+            String path = printInput(" Path to project (Eg:path/to/project) >> ");
+            vulnerabilityScanningChoice(path);
+            break;
+        }
+    }
 
     private static void handleReconnaissance() {
         while (true) {
@@ -166,10 +182,9 @@ public class Main {
         networkScanner.scanner_choice(resp, target);
     }
 
-//    private static void vulnerabilityScanningChoice(String choice,String path  ) {
-//        VulnerabilityScanner vulnerabilityScanner = new VulnerabilityScanner();
-//        vulnerabilityScanner.scanner(choice,path);
-//    }
+    private static void vulnerabilityScanningChoice(String path) {
+        new RunDependencyCheck(path);
+    }
 
     private static void reconChoice(String resp, String target, String manualInput) {
         // Implement the logic for reconChoice
@@ -207,8 +222,10 @@ public class Main {
                 3.  DETECTION                  Detect for ARP Spoofing and SYN Flood attacks
                                 
                 4.  VULNERABILITY SCANNING     Automatically scan code for security vulnerabilities
+                                
+                5.  ASK SECURITY               Ask Anything related to security or not! 
 
-                5.  EXIT                       Exit from Cyberguard to your terminal
+                6.  EXIT                       Exit from Cyberguard to your terminal
                       """;
     }
 }
