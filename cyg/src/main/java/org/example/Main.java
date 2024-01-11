@@ -20,18 +20,24 @@ public class Main {
                     case "--network":
                         scannerChoice('1', "");
                         break;
-                    case "--wifi":
-                        scannerChoice('2', "");
-                        break;
+//                    case "--wifi":
+//                        scannerChoice('2', "");
+//                        break;
                     case "--port":
                         String target = printInput(" NET IP ADDRESS (Eg: 192.168.1.1/24) >> ");
-                        scannerChoice('3', target);
+                        scannerChoice('2', target);
                         break;
                 }
             }
         } else if (args.length == 1) {
             if (args[0].equals("scan")) {
                 handleScanning();
+            }
+            if (args[0].equals("ask-me")) {
+                handleAsking();
+            }
+            if (args[0].equals("scan-vun")) {
+                handleVulnerabilityScanning();
             }
 
         } else {
